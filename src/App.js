@@ -3,17 +3,20 @@ import './App.css';
 import NumButtons from './components/NumButtons'
 import DisplayBar from './components/DisplayBar'
 import ArithmeticButtons from './components/ArithmeticButtons'
+import OperationsTree from './evaluation'
 
 class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      expression: [''],
-      value: 0
+      expression: [],
+      value: 0,
+      history : []
     }
     this.getLastExpressionElement = this.getLastExpressionElement.bind(this)
     this.handleNumberClick = this.handleNumberClick.bind(this)
     this.handleOperatorClick = this.handleOperatorClick.bind(this)
+    this.handleEval = this.handleEval.bind(this)
   }
 
   getLastExpressionElement() {
@@ -22,8 +25,13 @@ class App extends React.Component {
 
   handleNumberClick(num) {
     const lastElement = this.getLastExpressionElement()
-    const numExp = /[1-9]+/
-    if (lastElement.match(numExp)) {
+    const numExp = /[0-9]+/
+
+    if (!this.state.expression.length) {
+      this.setState({
+        expression: [...this.state.expression, num]
+      })
+    } else if (lastElement.match(numExp)) {
       let expressionCopy = this.state.expression.map(el => el)
       expressionCopy[expressionCopy.length - 1] += num
       this.setState({expression: expressionCopy})
@@ -51,8 +59,10 @@ class App extends React.Component {
     }
   }
 
-  handleBackSpace() {
-    //here
+  handleEval() { // when we press equal sign
+    console.log('hey')
+    const tree = new OperationsTree(this.state.expression)
+    this.setState({history: [...this.state.history, tree.evaluate()], expression: []})
   }
 
   render() {
@@ -60,8 +70,11 @@ class App extends React.Component {
     return (
       <div className="App">
         <DisplayBar expression={this.state.expression}/>
-        <ArithmeticButtons handleOp={this.handleOperatorClick}/>
+        <ArithmeticButtons handleOp={this.handleOperatorClick} evaluate={this.handleEval}/>
         <NumButtons handleNum={this.handleNumberClick}/>
+        <div>
+          <h1>History: {this.state.history.join(", ")}</h1>
+        </div>
       </div>
     );
   }

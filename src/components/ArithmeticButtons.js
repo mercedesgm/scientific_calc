@@ -8,7 +8,7 @@ const ArithmeticButtons = (props) => {
             <button value='*' onClick={props.handleOp}>×</button>
             <button value='-' onClick={props.handleOp}>-</button>
             <button value='+' onClick={props.handleOp}>+</button>
-            <button value='=' onClick={props.handleOp}>=</button>
+            <button value='=' onClick={props.evaluate}>=</button>
         </div>
     )
 }
